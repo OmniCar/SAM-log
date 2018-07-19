@@ -30,4 +30,4 @@ There are a bunch of `jest` tests in the `index.test.ts` file. Run `yarn test` t
 
 Releasing a new version is done as a `Github` release.
 
-TODO: The `Github` release will automatically trigger a build in `Circle` that publishes the new version to npm 👍
+The `Github` release will automatically trigger a build in `Circle` that publishes the new version to npm 👍

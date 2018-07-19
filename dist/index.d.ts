@@ -31,7 +31,7 @@ export declare function areSettingsEqual(a: ILogSettings | undefined, b: ILogSet
 export declare function getLogSettings(logSettings?: Partial<ILogSettings>): ILogSettings;
 export declare function initLogger(logSettings?: Partial<ILogSettings>): LoggerInstance;
 /**
- * Logs an error message. `errorlog` is a convenient and import-friendly alias
+ * Logs an error message. `logError` is a convenient and import-friendly alias
  * @param message The message to log
  * @param prefix A prefix to put in front of the log
  * @param meta Metadata to add to the log
@@ -59,7 +59,7 @@ export declare function logInfo(message: string | object, info?: ILogInfo): void
  */
 export declare function logVerbose(message: string | object, info?: ILogInfo): void;
 /**
- * Logs a debug message. `bug` is a convenient and import-friendly alias
+ * Logs a debug message. `logDebug` is a convenient and import-friendly alias
  * @param message The message to log
  * @param prefix A prefix to put in front of the log
  * @param meta Metadata to add to the log
