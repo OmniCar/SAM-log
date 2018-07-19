@@ -1,5 +1,5 @@
 {
-  "name": "sam-log",
+  "name": "@omnicar/sam-log",
   "description": "Handles logging to console and to stackdriver",
   "author": "Omnicar A/S",
   "license": "MIT",
