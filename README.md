@@ -1,5 +1,7 @@
 # SAM-log
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/OmniCar/SAM-log.svg)](https://greenkeeper.io/)
+
 ## Usage
 The default settings should make sure that no initialisation of the library is needed for Omnicar's applications.
 The only **prerequisite** to having the library default to sane environment specific loglevels is having the `NODE_ENV` environment variable available (set to: `production` | `staging` | `development` | `local`)
