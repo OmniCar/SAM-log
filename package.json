@@ -9,7 +9,7 @@
   "dependencies": {
     "@google-cloud/logging-winston": "^0.9.0",
     "@types/winston": "^2.3.9",
-    "winston": "^2.4.3",
+    "winston": "^3.0.0",
     "tslib": "^1.9.3"
   },
   "devDependencies": {
