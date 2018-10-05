@@ -1,4 +1,4 @@
-import { transports, createLogger, Logger } from 'winston'
+import { transports, createLogger, Logger, format } from 'winston'
 import * as Transport from 'winston-transport'
 import { LoggingWinston } from '@google-cloud/logging-winston'
 
@@ -21,7 +21,6 @@ export interface ILogSettings {
 }
 
 export interface ILogInfo {
-  settings?: ILogSettings
   prefix?: string
   meta?: any | any[]
 }
@@ -147,6 +146,7 @@ export function initLogger(logSettings?: Partial<ILogSettings>): Logger {
       new transports.Console({
         level,
         handleExceptions: true,
+        format: format.combine(format.colorize(), format.simple()),
       }),
     )
   }
@@ -179,62 +179,54 @@ const getLogInfo = (info?: ILogInfo) => {
   return info ? { ...defaults, ...info } : defaults
 }
 
+function log(level: Loglevel, msg: string | object, info?: ILogInfo) {
+  const { settings, prefix, meta } = getLogInfo(info)
+  const client = initLogger(settings || settingsInUse)
+  const message = processMessage(msg, prefix)
+  client.log({ level, message, meta }) //, meta)
+}
+
 /**
  * Logs an error message. `logError` is a convenient and import-friendly alias
  * @param message The message to log
- * @param prefix A prefix to put in front of the log
- * @param meta Metadata to add to the log
+ * @param info Metadata or a prefix
  */
 export function logError(message: string | object, info?: ILogInfo) {
-  const { settings, prefix, meta } = getLogInfo(info)
-  const client = initLogger(settings || settingsInUse)
-  client.error(processMessage(message, prefix), meta)
+  log('error', message, info)
 }
 
 /**
  * Logs a warning message
  * @param message The message to log
- * @param prefix A prefix to put in front of the log
- * @param meta Metadata to add to the log
+ * @param info Metadata or a prefix
  */
 export function logWarn(message: string | object, info?: ILogInfo) {
-  const { settings, prefix, meta } = getLogInfo(info)
-  const client = initLogger(settings || settingsInUse)
-  client.warn(processMessage(message, prefix), meta)
+  log('warn', message, info)
 }
 
 /**
  * Logs an info message
  * @param message The message to log
- * @param prefix A prefix to put in front of the log
- * @param meta Metadata to add to the log
+ * @param info Metadata or a prefix
  */
 export function logInfo(message: string | object, info?: ILogInfo) {
-  const { settings, prefix, meta } = getLogInfo(info)
-  const client = initLogger(settings || settingsInUse)
-  client.info(processMessage(message, prefix), meta)
+  log('info', message, info)
 }
 
 /**
  * Logs a verbose message
  * @param message The message to log
- * @param prefix A prefix to put in front of the log
- * @param meta Metadata to add to the log
+ * @param info Metadata or a prefix
  */
 export function logVerbose(message: string | object, info?: ILogInfo) {
-  const { settings, prefix, meta } = getLogInfo(info)
-  const client = initLogger(settings || settingsInUse)
-  client.verbose(processMessage(message, prefix), meta)
+  log('verbose', message, info)
 }
 
 /**
  * Logs a debug message. `logDebug` is a convenient and import-friendly alias
  * @param message The message to log
- * @param prefix A prefix to put in front of the log
- * @param meta Metadata to add to the log
+ * @param info Metadata or a prefix
  */
 export function logDebug(message: string | object, info?: ILogInfo) {
-  const { settings, prefix, meta } = getLogInfo(info)
-  const client = initLogger(settings || settingsInUse)
-  client.debug(processMessage(message, prefix), meta)
+  log('debug', message, info)
 }

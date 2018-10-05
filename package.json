@@ -8,14 +8,13 @@
   "typings": "./dist/index.d.ts",
   "dependencies": {
     "@google-cloud/logging-winston": "^0.10.2",
-    "@types/winston": "^2.4.4",
     "winston": "^3.1.0",
     "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "@types/jest": "^23.1.5",
-    "jest": "^23.4.0",
-    "ts-jest": "^23.0.0",
+    "@types/jest": "^23.3.3",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.3",
     "typescript": "^3.1.1"
   },
   "scripts": {
@@ -26,6 +25,13 @@
     "tsc-once": "node node_modules/typescript/bin/tsc -p ./tsconfig.json"
   },
   "jest": {
+    "globals": {
+      "ts-jest": {
+        "diagnostics": {
+          "ignoreCodes": [2345]
+        }
+      }
+    },
     "transform": {
       "^.+\\.ts$": "ts-jest"
     },

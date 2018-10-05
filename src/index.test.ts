@@ -124,33 +124,34 @@ describe('Settings equality', () => {
 describe('Logging methods (except for verbose)', () => {
   it('Verifies that error is called', () => {
     const logger = initLogger()
-    const spy = jest.spyOn(logger, 'error')
+    const spy = jest.spyOn(logger, 'log')
     logError('This is a test')
     expect(spy).toHaveBeenCalledTimes(1)
   })
   it('Verifies that warn is called', () => {
     const logger = initLogger()
-    const spy = jest.spyOn(logger, 'warn')
+    const spy = jest.spyOn(logger, 'log')
     logWarn('This is a test')
     expect(spy).toHaveBeenCalledTimes(1)
   })
   it('Verifies that info is called', () => {
     const logger = initLogger()
-    const spy = jest.spyOn(logger, 'info')
+    const spy = jest.spyOn(logger, 'log')
     logInfo('This is a test')
     expect(spy).toHaveBeenCalledTimes(1)
   })
   it('Verifies that debug is called', () => {
     const logger = initLogger()
-    const spy = jest.spyOn(logger, 'debug')
+    const spy = jest.spyOn(logger, 'log')
     logDebug('This is a test')
     expect(spy).toHaveBeenCalledTimes(1)
   })
   it('Verifies that settings are not affected by logging', () => {
-    const logger = initLogger({ useStackDriver: true })
+    initLogger({ useStackDriver: true })
     const initialSettings = { ...getCurrentLogSettings() }
     logDebug('This is a test')
     const settingsAfterLogging = getCurrentLogSettings()
+    // This requires the ignored code 2345 in ts-jest settings
     const equal = areSettingsEqual(initialSettings, settingsAfterLogging)
     expect(equal).toEqual(true)
   })
