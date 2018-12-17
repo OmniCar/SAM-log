@@ -1,7 +1,6 @@
 import {
   getLogSettings,
   clearLogSettings,
-  logInfo,
   initLogger,
   logDebug,
   processMessage,
@@ -100,16 +99,6 @@ describe('Logging methods (except for verbose)', () => {
   })
   // @TODO: test settings passed to log functions
   // @TODO: test replacement patterns
-  it('Fails if no transport is defined', () => {
-    process.env = {
-      ...process.env,
-      NODE_ENV: 'unknown',
-    }
-    initLogger({
-      useConsole: false,
-    })
-    logInfo('this test should fail')
-  })
 })
 
 /**
