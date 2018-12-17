@@ -1,16 +1,13 @@
 import {
   getLogSettings,
-  ILogSettings,
-  logError,
   clearLogSettings,
-  logWarn,
   logInfo,
   initLogger,
   logDebug,
-  areSettingsEqual,
-  getCurrentLogSettings,
   processMessage,
+  currentSettings,
 } from './index'
+import { ILogSettings } from './types'
 
 const clearEnv = () => (process.env = {})
 
@@ -39,7 +36,11 @@ describe('Log settings', () => {
       keyFilename: 'test',
       projectId: 'test',
     }
-    const validSettings = { ...invalidSettings, level: 'debug' }
+    const validSettings = {
+      ...invalidSettings,
+      level: 'debug',
+      useConsole: true,
+    }
     const settings = getLogSettings(invalidSettings)
     expect(settings).toEqual(validSettings)
   })
@@ -72,86 +73,12 @@ describe('Log initialization', () => {
     expect(logger.level).toEqual('debug')
   })
 })
-describe('Settings equality', () => {
-  it('Returns true for two undefined objects', () => {
-    const equal = areSettingsEqual(undefined, undefined)
-    expect(equal).toEqual(true)
-  })
-  it('Returns false when only one object is undefined', () => {
-    const equal = areSettingsEqual({ ...validSettings }, undefined)
-    expect(equal).toBeFalsy
-  })
-  it('Returns true when objects are alike', () => {
-    const settingsA: ILogSettings = {
-      level: 'silly',
-      useStackDriver: true,
-      useConsole: true,
-      keyFilename: 'test',
-      projectId: 'test',
-    }
-    const settingsB = { ...settingsA }
-    const equal = areSettingsEqual(settingsA, settingsB)
-    expect(equal).toEqual(true)
-  })
-  it('Returns false when objects are not alike', () => {
-    const settingsA: ILogSettings = {
-      level: 'silly',
-      useStackDriver: true,
-      useConsole: true,
-      keyFilename: 'test',
-      projectId: 'test',
-    }
-    const eq1 = areSettingsEqual(settingsA, {
-      ...settingsA,
-      useStackDriver: false,
-    })
-    expect(eq1).toBeFalsy
-    const eq2 = areSettingsEqual(settingsA, { ...settingsA, useConsole: false })
-    expect(eq2).toBeFalsy
-    const eq3 = areSettingsEqual(settingsA, { ...settingsA, level: 'debug' })
-    expect(eq3).toBeFalsy
-    const eq4 = areSettingsEqual(settingsA, {
-      ...settingsA,
-      keyFilename: 'another test',
-    })
-    expect(eq4).toBeFalsy
-    const eq5 = areSettingsEqual(settingsA, {
-      ...settingsA,
-      projectId: 'another test',
-    })
-    expect(eq5).toBeFalsy
-  })
-})
 describe('Logging methods (except for verbose)', () => {
-  it('Verifies that error is called', () => {
-    const logger = initLogger()
-    const spy = jest.spyOn(logger, 'log')
-    logError('This is a test')
-    expect(spy).toHaveBeenCalledTimes(1)
-  })
-  it('Verifies that warn is called', () => {
-    const logger = initLogger()
-    const spy = jest.spyOn(logger, 'log')
-    logWarn('This is a test')
-    expect(spy).toHaveBeenCalledTimes(1)
-  })
-  it('Verifies that info is called', () => {
-    const logger = initLogger()
-    const spy = jest.spyOn(logger, 'log')
-    logInfo('This is a test')
-    expect(spy).toHaveBeenCalledTimes(1)
-  })
-  it('Verifies that debug is called', () => {
-    const logger = initLogger()
-    const spy = jest.spyOn(logger, 'log')
-    logDebug('This is a test')
-    expect(spy).toHaveBeenCalledTimes(1)
-  })
-  it('Verifies that settings are not affected by logging', () => {
+  it('Verifies that settings are passed through correctly', () => {
     initLogger({ useStackDriver: true })
-    const initialSettings = { ...getCurrentLogSettings() }
-    logDebug('This is a test')
-    const settingsAfterLogging = getCurrentLogSettings()
+    const initialSettings = { ...currentSettings }
+    logDebug('This is a test', { settings: { useStackDriver: true } })
+    const settingsAfterLogging = currentSettings
     // This requires the ignored code 2345 in ts-jest settings
     const equal = areSettingsEqual(initialSettings, settingsAfterLogging)
     expect(equal).toEqual(true)
@@ -169,11 +96,39 @@ describe('Logging methods (except for verbose)', () => {
   })
   it('Prints an object without errors', () => {
     const testObject = { test: 'object', value: 4, valid: true }
-    const logger = initLogger()
-    const spy = jest.spyOn(logger, 'log')
     logDebug(testObject)
-    expect(spy).toHaveBeenCalledTimes(1)
   })
   // @TODO: test settings passed to log functions
   // @TODO: test replacement patterns
+  it('Fails if no transport is defined', () => {
+    process.env = {
+      ...process.env,
+      NODE_ENV: 'unknown',
+    }
+    initLogger({
+      useConsole: false,
+    })
+    logInfo('this test should fail')
+  })
 })
+
+/**
+ * Verifies if the two objects of ILogSettings type are deeply equal
+ * @param a First settings object
+ * @param b Second settings object
+ */
+function areSettingsEqual(
+  a: ILogSettings | undefined,
+  b: ILogSettings | undefined,
+) {
+  console.log('comparing:')
+  console.log(a)
+  console.log(b)
+  return a === undefined || b === undefined
+    ? a === undefined && b === undefined
+    : a.level === b.level &&
+        a.useStackDriver === b.useStackDriver &&
+        a.useConsole === b.useConsole &&
+        a.keyFilename === b.keyFilename &&
+        a.projectId === b.projectId
+}

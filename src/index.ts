@@ -1,29 +1,7 @@
 import { transports, createLogger, Logger, format } from 'winston'
 import * as Transport from 'winston-transport'
 import { LoggingWinston } from '@google-cloud/logging-winston'
-
-// @TODO: Put types/interfaces in separate file
-export type Environment =
-  | 'production'
-  | 'staging'
-  | 'development'
-  | 'local'
-  | 'default'
-
-export type Loglevel = 'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly'
-
-export interface ILogSettings {
-  level: Loglevel
-  useStackDriver: boolean
-  useConsole: boolean
-  keyFilename?: string // Service account key file
-  projectId?: string // Project id
-}
-
-export interface ILogInfo {
-  prefix?: string
-  meta?: any | any[]
-}
+import { Environment, Loglevel, ILogSettings, ILogInfo } from './types'
 
 const allEnvironments: Environment[] = [
   'production',
@@ -41,6 +19,9 @@ const allLogLevels: Loglevel[] = [
   'debug',
   'silly',
 ]
+
+// This is only for debugging purposes
+export let currentSettings: ILogSettings | undefined
 
 /**
  * Validlates a given string against the list of LogLevels
@@ -61,36 +42,12 @@ const defaultLogLevels: { [key in Environment]: Loglevel } = {
 }
 
 let winstonClient: Logger | undefined
-let settingsInUse: ILogSettings | undefined
 
 /**
  * Resets the winstonClient and settingsInUse - useful for tests
  */
 export function clearLogSettings() {
   winstonClient = undefined
-  settingsInUse = undefined
-}
-
-export function getCurrentLogSettings() {
-  return settingsInUse
-}
-
-/**
- * Verifies if the two objects of ILogSettings type are deeply equal
- * @param a First settings object
- * @param b Second settings object
- */
-export function areSettingsEqual(
-  a: ILogSettings | undefined,
-  b: ILogSettings | undefined,
-) {
-  return a === undefined || b === undefined
-    ? a === undefined && b === undefined
-    : a.level === b.level &&
-        a.useStackDriver === b.useStackDriver &&
-        a.useConsole === b.useConsole &&
-        a.keyFilename === b.keyFilename &&
-        a.projectId === b.projectId
 }
 
 /**
@@ -123,22 +80,21 @@ export function getLogSettings(
       logSettings && logSettings.useStackDriver !== undefined
         ? logSettings.useStackDriver
         : useStackDriver,
-    useConsole:
-      logSettings && logSettings.useConsole !== undefined
-        ? logSettings.useConsole
-        : !useStackDriver,
+    // At least one transport must be defined - if no stackdriver we always use consonle
+    useConsole: !useStackDriver
+      ? true
+      : logSettings &&
+        logSettings.useConsole !== undefined &&
+        logSettings.useConsole
+      ? logSettings.useConsole
+      : !useStackDriver,
     keyFilename: (logSettings && logSettings.keyFilename) || undefined,
     projectId: (logSettings && logSettings.projectId) || undefined,
   }
 }
 
 export function initLogger(logSettings?: Partial<ILogSettings>): Logger {
-  // The existing client is returned if it exists and settings have not changed
-  // or if the settings are undefined
   const settings = getLogSettings(logSettings)
-  if (winstonClient && areSettingsEqual(settings, settingsInUse)) {
-    return winstonClient
-  }
   const { level, useStackDriver, useConsole, keyFilename, projectId } = settings
   const transportMethods: Transport[] = []
   if (useConsole) {
@@ -163,7 +119,7 @@ export function initLogger(logSettings?: Partial<ILogSettings>): Logger {
     level,
     transports: transportMethods,
   })
-  settingsInUse = settings
+  currentSettings = settings
   return winstonClient
 }
 
@@ -189,16 +145,16 @@ export function processMessage(message: string | object, prefix: string = '') {
   return `${prefix}${message}`
 }
 
-const getLogInfo = (info?: ILogInfo) => {
+const getLogInfo = (info?: ILogInfo): ILogInfo => {
   const defaults = { settings: undefined, prefix: '', meta: undefined }
   return info ? { ...defaults, ...info } : defaults
 }
 
-function log(level: Loglevel, msg: string | object, info?: ILogInfo) {
+export function log(level: Loglevel, msg: string | object, info?: ILogInfo) {
   const { settings, prefix, meta } = getLogInfo(info)
-  const client = initLogger(settings || settingsInUse)
+  const client = initLogger(settings)
   const message = processMessage(msg, prefix)
-  client.log({ level, message, meta }) //, meta)
+  client.log({ level, message, meta })
 }
 
 /**
