@@ -97,6 +97,15 @@ describe('Logging methods (except for verbose)', () => {
     const testObject = { test: 'object', value: 4, valid: true }
     logDebug(testObject)
   })
+  it('Should use stackdriver in prod', () => {
+    process.env = {
+      ...process.env,
+      LOG_LEVEL: 'silly',
+      NODE_ENV: 'production',
+    }
+    logDebug('This is a test')
+    expect(currentSettings!.useStackDriver).toBe(true)
+  })
   // @TODO: test settings passed to log functions
   // @TODO: test replacement patterns
 })
@@ -110,9 +119,6 @@ function areSettingsEqual(
   a: ILogSettings | undefined,
   b: ILogSettings | undefined,
 ) {
-  console.log('comparing:')
-  console.log(a)
-  console.log(b)
   return a === undefined || b === undefined
     ? a === undefined && b === undefined
     : a.level === b.level &&
