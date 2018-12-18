@@ -1,7 +1,29 @@
 import { transports, createLogger, Logger, format } from 'winston'
 import * as Transport from 'winston-transport'
 import { LoggingWinston } from '@google-cloud/logging-winston'
-import { Environment, Loglevel, ILogSettings, ILogInfo } from './types'
+
+export type Environment =
+  | 'production'
+  | 'staging'
+  | 'development'
+  | 'local'
+  | 'default'
+
+export type Loglevel = 'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly'
+
+export interface ILogSettings {
+  level: Loglevel
+  useStackDriver: boolean
+  useConsole: boolean
+  keyFilename?: string // Service account key file
+  projectId?: string // Project id
+}
+
+export interface ILogInfo {
+  prefix?: string
+  meta?: any | any[]
+  settings?: Partial<ILogSettings>
+}
 
 const allEnvironments: Environment[] = [
   'production',

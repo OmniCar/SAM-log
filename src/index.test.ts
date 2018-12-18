@@ -5,8 +5,8 @@ import {
   logDebug,
   processMessage,
   currentSettings,
+  ILogSettings,
 } from './index'
-import { ILogSettings } from './types'
 
 const clearEnv = () => (process.env = {})
 
