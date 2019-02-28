@@ -3,18 +3,20 @@
   "description": "Handles logging to console and to stackdriver",
   "author": "Omnicar A/S",
   "license": "MIT",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "dependencies": {
-    "@google-cloud/logging-winston": "^0.10.2",
-    "winston": "^3.2.0",
-    "tslib": "^1.9.3"
+    "@google-cloud/logging-winston": "0.11",
+    "tslib": "^1.9.3",
+    "winston": "^3.2.0"
   },
   "devDependencies": {
-    "@types/jest": "24.0.5",
+    "@types/jest": "24.0.9",
     "jest": "24.1.0",
-    "ts-jest": "23.10.5",
+    "ts-jest": "24",
     "typescript": "3.3.3"
   },
   "scripts": {
@@ -28,7 +30,9 @@
     "globals": {
       "ts-jest": {
         "diagnostics": {
-          "ignoreCodes": [2345]
+          "ignoreCodes": [
+            2345
+          ]
         }
       }
     },
