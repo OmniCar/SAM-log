@@ -161,10 +161,15 @@ const replaceErrors = (_key: string, value: any) => {
 }
 
 export function processMessage(message: string | object, prefix: string = '') {
+  let formattedMessage: string
   if (typeof message === 'object') {
-    return `${prefix}${JSON.stringify(message, replaceErrors)}`
+    formattedMessage = `${prefix}${JSON.stringify(message, replaceErrors)}`
   }
-  return `${prefix}${message}`
+  formattedMessage = `${prefix}${message}`
+  return formattedMessage
+  // return formattedMessage.length > 4096
+  //   ? `${formattedMessage.substring(0, 4082)} ... truncated`
+  //   : formattedMessage
 }
 
 const getLogInfo = (info?: ILogInfo): ILogInfo => {

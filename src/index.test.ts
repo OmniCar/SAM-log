@@ -109,6 +109,19 @@ describe('Logging methods (except for verbose)', () => {
   // @TODO: test settings passed to log functions
   // @TODO: test replacement patterns
 })
+// describe('processMessage', () => {
+//   const base = '1234567890'
+//   it('Truncates messages larger that 4K', () => {
+//     const result = processMessage(base.repeat(500))
+//     expect(result.length).toBe(4096)
+//     expect(result).toContain('truncated')
+//   })
+//   it('Does not truncate messages smaller than 4K', () => {
+//     const result = processMessage(base.repeat(400))
+//     expect(result.length).toBeLessThan(4096)
+//     expect(result).not.toContain('truncated')
+//   })
+// })
 
 /**
  * Verifies if the two objects of ILogSettings type are deeply equal
