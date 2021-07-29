@@ -1,10 +1,9 @@
 import {
   getLogSettings,
-  clearLogSettings,
   initLogger,
   logDebug,
   processMessage,
-  currentSettings,
+  lastUsedSettings,
   ILogSettings,
 } from './index'
 
@@ -19,7 +18,6 @@ const validSettings: ILogSettings = {
 }
 
 beforeEach(() => {
-  clearLogSettings()
   clearEnv()
 })
 describe('Log settings', () => {
@@ -75,9 +73,9 @@ describe('Log initialization', () => {
 describe('Logging methods (except for verbose)', () => {
   it('Verifies that settings are passed through correctly', () => {
     initLogger({ useStackDriver: true })
-    const initialSettings = { ...currentSettings }
+    const initialSettings = { ...lastUsedSettings }
     logDebug('This is a test', { settings: { useStackDriver: true } })
-    const settingsAfterLogging = currentSettings
+    const settingsAfterLogging = lastUsedSettings
     // This requires the ignored code 2345 in ts-jest settings
     const equal = areSettingsEqual(initialSettings, settingsAfterLogging)
     expect(equal).toEqual(true)
@@ -104,7 +102,7 @@ describe('Logging methods (except for verbose)', () => {
       NODE_ENV: 'production',
     }
     logDebug('This is a test')
-    expect(currentSettings!.useStackDriver).toBe(true)
+    expect(lastUsedSettings!.useStackDriver).toBe(true)
   })
   // @TODO: test settings passed to log functions
   // @TODO: test replacement patterns
