@@ -42,8 +42,8 @@ const allLogLevels: Loglevel[] = [
   'silly',
 ]
 
-// This is only for debugging purposes
-export let currentSettings: ILogSettings | undefined
+// This is only for test purposes
+export let lastUsedSettings: ILogSettings | undefined
 
 /**
  * Validlates a given string against the list of LogLevels
@@ -63,13 +63,11 @@ const defaultLogLevels: { [key in Environment]: Loglevel } = {
   default: 'debug',
 }
 
-let winstonClient: Logger | undefined
-
 /**
- * Resets the winstonClient and settingsInUse - useful for tests
+ * Deprecated
  */
 export function clearLogSettings() {
-  winstonClient = undefined
+  logWarn('SAM-Log/clearLogSettings is deprecated')
 }
 
 /**
@@ -115,35 +113,48 @@ export function getLogSettings(
   }
 }
 
+
+const mapLogger:Map<string,Logger> = new Map()
+
 export function initLogger(logSettings?: Partial<ILogSettings>): Logger {
   const settings = getLogSettings(logSettings)
+  lastUsedSettings = settings
   const { level, useStackDriver, useConsole, keyFilename, projectId } = settings
-  const transportMethods: Transport[] = []
-  if (useConsole) {
-    transportMethods.push(
-      new transports.Console({
-        level,
-        handleExceptions: true,
-        format: format.combine(format.colorize(), format.simple()),
-      }),
-    )
+  let logger = mapLogger.get(loggerKey(settings))
+  if(!logger) {
+    const transportMethods: Transport[] = []
+    if (useConsole) {
+      transportMethods.push(
+        new transports.Console({
+          level,
+          handleExceptions: true,
+          format: format.combine(format.colorize(), format.simple()),
+        }),
+      )
+    }
+    if (useStackDriver) {
+      transportMethods.push(
+        new LoggingWinston({
+          level,
+          keyFilename,
+          projectId,
+        }),
+      )
+    }
+    logger = createLogger({
+      level,
+      transports: transportMethods,
+    })
+    mapLogger.set(loggerKey(settings),logger)
   }
-  if (useStackDriver) {
-    transportMethods.push(
-      new LoggingWinston({
-        level,
-        keyFilename,
-        projectId,
-      }),
-    )
-  }
-  winstonClient = createLogger({
-    level,
-    transports: transportMethods,
-  })
-  currentSettings = settings
-  return winstonClient
+  return logger
 }
+
+function loggerKey(params:ILogSettings ):string {
+  const key = JSON.stringify(params)
+  return key
+}
+
 
 // See https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
 const replaceErrors = (_key: string, value: any) => {
