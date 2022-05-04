@@ -1,4 +1,6 @@
 version: 2
+orbs:
+  node: circleci/node@16.15
 jobs:
   build-test:
     working_directory: '~/sam-log'
