@@ -3,7 +3,7 @@ jobs:
   build-test:
     working_directory: '~/sam-log'
     docker:
-      - image: eu.gcr.io/sam-non-production/circle-gsdk-firebase-node-10
+      - image: eu.gcr.io/sam-non-production/circle-gsdk-firebase-node-14
         auth:
           username: _json_key
           password: $GCLOUD_CONTAINER_REGISTRY_SERVICE_KEY 
@@ -28,7 +28,7 @@ jobs:
   deploy:
     working_directory: '~/sam-log'
     docker:
-      - image: eu.gcr.io/sam-non-production/circle-gsdk-firebase-node-10
+      - image: eu.gcr.io/sam-non-production/circle-gsdk-firebase-node-14
         auth:
           username: _json_key
           password: $GCLOUD_CONTAINER_REGISTRY_SERVICE_KEY 
