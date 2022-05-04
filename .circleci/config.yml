@@ -9,7 +9,7 @@ jobs:
 #        auth:
 #          username: _json_key
 #          password: $GCLOUD_CONTAINER_REGISTRY_SERVICE_KEY 
-      - image: cimg/node:16.15.0-browsers
+      - image: cimg/node:18.0.0-browsers
     steps:
       - checkout
       - node/install:
@@ -39,7 +39,7 @@ jobs:
 #        auth:
 #          username: _json_key
 #          password: $GCLOUD_CONTAINER_REGISTRY_SERVICE_KEY 
-      - image: cimg/node:16.15.0-browsers
+      - image: cimg/node:18.0.0-browsers
     steps:
       - checkout
       - node/install:
