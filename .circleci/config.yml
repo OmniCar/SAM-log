@@ -9,6 +9,7 @@ jobs:
           password: $GCLOUD_CONTAINER_REGISTRY_SERVICE_KEY 
     steps:
       - checkout
+      - run: node --version
       - run:
           name: yarn-build-compile
           command: |
@@ -34,6 +35,7 @@ jobs:
           password: $GCLOUD_CONTAINER_REGISTRY_SERVICE_KEY 
     steps:
       - checkout
+      - run: node --version
       - attach_workspace:
           at: .
       - run:
