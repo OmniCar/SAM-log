@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 orbs:
   node: circleci/node@16.15
 jobs:
@@ -61,7 +61,7 @@ jobs:
             echo "Update NPM"
             npm publish --access public .
 workflows:
-  version: 2
+  version: 2.1
   build-deploy:
     jobs:
       - build-test:
