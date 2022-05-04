@@ -1,14 +1,21 @@
-version: 2
+version: 2.1
+orbs:
+  node: circleci/node@5.0.2
 jobs:
   build-test:
     working_directory: '~/sam-log'
     docker:
-      - image: eu.gcr.io/sam-non-production/circle-gsdk-firebase-node-10
-        auth:
-          username: _json_key
-          password: $GCLOUD_CONTAINER_REGISTRY_SERVICE_KEY 
+#      - image: eu.gcr.io/sam-non-production/circle-gsdk-firebase-node-14
+#        auth:
+#          username: _json_key
+#          password: $GCLOUD_CONTAINER_REGISTRY_SERVICE_KEY 
+      - image: cimg/node:16.15.0-browsers
     steps:
       - checkout
+      - node/install:
+          install-yarn: true
+          node-version: '16.15'
+      - run: node --version
       - run:
           name: yarn-build-compile
           command: |
@@ -28,12 +35,17 @@ jobs:
   deploy:
     working_directory: '~/sam-log'
     docker:
-      - image: eu.gcr.io/sam-non-production/circle-gsdk-firebase-node-10
-        auth:
-          username: _json_key
-          password: $GCLOUD_CONTAINER_REGISTRY_SERVICE_KEY 
+#      - image: eu.gcr.io/sam-non-production/circle-gsdk-firebase-node-14
+#        auth:
+#          username: _json_key
+#          password: $GCLOUD_CONTAINER_REGISTRY_SERVICE_KEY 
+      - image: cimg/node:16.15.0-browsers
     steps:
       - checkout
+      - node/install:
+          install-yarn: true
+          node-version: '16.15'
+      - run: node --version
       - attach_workspace:
           at: .
       - run:
@@ -49,7 +61,7 @@ jobs:
             echo "Update NPM"
             npm publish --access public .
 workflows:
-  version: 2
+  version: 2.1
   build-deploy:
     jobs:
       - build-test:
