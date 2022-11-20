@@ -10,7 +10,7 @@
   "typings": "./dist/index.d.ts",
   "dependencies": {
     "@google-cloud/logging-winston": "0.11",
-    "tslib": "^1.14.1",
+    "tslib": "^2.0.0",
     "winston": "^3.7.2"
   },
   "devDependencies": {
