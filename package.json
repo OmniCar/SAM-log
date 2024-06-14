@@ -8,23 +8,27 @@
   ],
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
-  "dependencies": {
-    "@google-cloud/logging-winston": "0.11",
-    "tslib": "^1.14.1",
-    "winston": "^3.7.2"
-  },
-  "devDependencies": {
-    "@types/jest": "25.1.4",
-    "jest": "25.1.0",
-    "ts-jest": "25.2.1",
-    "typescript": "3.8.3"
-  },
   "scripts": {
     "test": "jest",
     "test-watch": "jest --watchAll",
     "test-debug": "node --inspect node_modules/.bin/jest --watchAll",
     "tsc": "node node_modules/typescript/bin/tsc -p ./tsconfig.json -w",
     "tsc-once": "node node_modules/typescript/bin/tsc -p ./tsconfig.json"
+  },
+  "engines": {
+    "node": ">=18.20.2",
+    "yarn": ">=1.22.22"
+  },
+  "dependencies": {
+    "@google-cloud/logging-winston": "5.3.0",
+    "tslib": "^1.14.1",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "@types/jest": "25.1.4",
+    "jest": "25.1.0",
+    "ts-jest": "25.2.1",
+    "typescript": "3.8.3"
   },
   "jest": {
     "globals": {
