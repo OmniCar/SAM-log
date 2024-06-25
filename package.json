@@ -9,7 +9,7 @@
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "test": "jest --detectOpenHandles --no-cache --no-watchAll",
+    "test": "jest --detectOpenHandles --no-cache --no-watchAll --forceExit",
     "test-watch": "jest --detectOpenHandles --watchAll --no-cache",
     "test-debug": "node --detectOpenHandles --inspect node_modules/.bin/jest --watchAll --no-cache",
     "tsc": "node node_modules/typescript/bin/tsc -p ./tsconfig.json -w",
