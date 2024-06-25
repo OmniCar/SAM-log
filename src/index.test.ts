@@ -20,6 +20,7 @@ const validSettings: ILogSettings = {
 beforeEach(() => {
   clearEnv()
 })
+
 describe('Log settings', () => {
   it('Returns the same valid settings it was given', () => {
     const settings = getLogSettings({ ...validSettings })
@@ -58,6 +59,7 @@ describe('Log settings', () => {
     expect(settings.useStackDriver).toEqual(true)
   })
 })
+
 describe('Log initialization', () => {
   it('Inits the LoggerInstance without any settings and the correct defaults', () => {
     const logger = initLogger()
@@ -70,12 +72,15 @@ describe('Log initialization', () => {
     expect(logger.level).toEqual('debug')
   })
 })
+
 describe('Logging methods (except for verbose)', () => {
   it('Verifies that settings are passed through correctly', () => {
     initLogger({ useStackDriver: true })
-    const initialSettings = { ...lastUsedSettings }
+    const initialSettings: ILogSettings | undefined = { ...lastUsedSettings! }
+
     logDebug('This is a test', { settings: { useStackDriver: true } })
     const settingsAfterLogging = lastUsedSettings
+
     // This requires the ignored code 2345 in ts-jest settings
     const equal = areSettingsEqual(initialSettings, settingsAfterLogging)
     expect(equal).toEqual(true)
@@ -107,6 +112,7 @@ describe('Logging methods (except for verbose)', () => {
   // @TODO: test settings passed to log functions
   // @TODO: test replacement patterns
 })
+
 describe('processMessage', () => {
   const base = '1234567890'
   it('Truncates messages larger that 4K', () => {
