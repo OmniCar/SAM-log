@@ -9,9 +9,9 @@
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "test": "jest",
-    "test-watch": "jest --watchAll",
-    "test-debug": "node --inspect node_modules/.bin/jest --watchAll",
+    "test": "jest --detectOpenHandles --no-cache",
+    "test-watch": "jest --detectOpenHandles --watchAll --no-cache",
+    "test-debug": "node --detectOpenHandles --inspect node_modules/.bin/jest --watchAll --no-cache",
     "tsc": "node node_modules/typescript/bin/tsc -p ./tsconfig.json -w",
     "tsc-once": "node node_modules/typescript/bin/tsc -p ./tsconfig.json"
   },
@@ -22,8 +22,8 @@
   },
   "devDependencies": {
     "@types/jest": "29.5.12",
-    "jest": "29.7.0",
-    "ts-jest": "29.1.5",
+    "jest": "25.1.0",
+    "ts-jest": "25.2.1",
     "typescript": "5.5.2"
   },
   "jest": {
