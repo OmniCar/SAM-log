@@ -113,15 +113,15 @@ export function getLogSettings(
   }
 }
 
-
-const mapLogger:Map<string,Logger> = new Map()
+const mapLogger: Map<string, Logger> = new Map()
 
 export function initLogger(logSettings?: Partial<ILogSettings>): Logger {
   const settings = getLogSettings(logSettings)
   lastUsedSettings = settings
   const { level, useStackDriver, useConsole, keyFilename, projectId } = settings
   let logger = mapLogger.get(loggerKey(settings))
-  if(!logger) {
+
+  if (!logger) {
     const transportMethods: Transport[] = []
     if (useConsole) {
       transportMethods.push(
@@ -141,27 +141,28 @@ export function initLogger(logSettings?: Partial<ILogSettings>): Logger {
         }),
       )
     }
+
     logger = createLogger({
       level,
       transports: transportMethods,
     })
-    mapLogger.set(loggerKey(settings),logger)
+    mapLogger.set(loggerKey(settings), logger)
   }
+
   return logger
 }
 
-function loggerKey(params:ILogSettings ):string {
+function loggerKey(params: ILogSettings): string {
   const key = JSON.stringify(params)
   return key
 }
-
 
 // See https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
 const replaceErrors = (_key: string, value: any) => {
   if (value instanceof Error) {
     const error: any = {}
 
-    Object.getOwnPropertyNames(value).forEach(function(key: any) {
+    Object.getOwnPropertyNames(value).forEach(function (key: any) {
       error[key] = (value as any)[key]
     })
 
@@ -189,9 +190,13 @@ const getLogInfo = (info?: ILogInfo): ILogInfo => {
 
 export function log(level: Loglevel, msg: string | object, info?: ILogInfo) {
   const { settings, prefix, meta } = getLogInfo(info)
-  const client = initLogger(settings)
+  const client: Logger | null = initLogger(settings)
   const message = processMessage(msg, prefix)
+
   client.log({ level, message, meta })
+  client.end()
+  client.close()
+  client.destroy()
 }
 
 /**
