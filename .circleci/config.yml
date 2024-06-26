@@ -9,7 +9,7 @@ jobs:
 #        auth:
 #          username: _json_key
 #          password: $GCLOUD_CONTAINER_REGISTRY_SERVICE_KEY 
-      - image: cimg/node:18.20.2
+      - image: cimg/node:22.3.0
     steps:
       - checkout
       - run: node --version
@@ -39,7 +39,7 @@ jobs:
 #        auth:
 #          username: _json_key
 #          password: $GCLOUD_CONTAINER_REGISTRY_SERVICE_KEY 
-      - image: cimg/node:18.20.2
+      - image: cimg/node:22.3.0
     steps:
       - checkout
       - run: node --version
