@@ -194,9 +194,6 @@ export function log(level: Loglevel, msg: string | object, info?: ILogInfo) {
   const message = processMessage(msg, prefix)
 
   client.log({ level, message, meta })
-  client.end()
-  client.close()
-  client.destroy()
 }
 
 /**
